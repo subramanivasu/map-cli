@@ -1,1 +1,1 @@
-# map-it
+# map-cli
