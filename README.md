@@ -13,20 +13,11 @@ A command-line tool for map operations powered by [Mappls](https://www.mappls.co
   - Mix and match both approaches in a single command
   - Results displayed in kilometers
 
-<<<<<<< HEAD
-### Planned Features
-
-- **Nearby Places Finder**
-  - Search for specific types of places (cafes, restaurants, parks, etc.) in a given location
-  - Get top results sorted by relevance
-  - Filter by radius and other criteria
-=======
 - **Nearby Places Finder** (`nearby`)
   - Search for specific types of places (cafes, restaurants, parks, etc.) around a location
   - Get top 5 results sorted by distance
   - Support multiple keywords with OR and AND operators
   - Display place information including address, phone, and email
->>>>>>> f695d0e (Update README.md)
 
 ## Prerequisites
 
@@ -130,8 +121,6 @@ For more information:
 ./map arieldist --help
 ```
 
-<<<<<<< HEAD
-=======
 ### Nearby Places Finder
 
 Search for nearby places (cafes, restaurants, hospitals, etc.) around a specific location.
@@ -199,7 +188,6 @@ For more information:
 ./map nearby --help
 ```
 
->>>>>>> f695d0e (Update README.md)
 ## Project Structure
 
 ```
@@ -207,12 +195,8 @@ map-it/
 ├── main.go                    # Application entry point
 ├── cmd/
 │   ├── root.go               # Root command configuration
-<<<<<<< HEAD
-│   └── arieldist.go          # Aerial distance command implementation
-=======
 │   ├── arieldist.go          # Aerial distance command implementation
 │   └── nearby.go             # Nearby places search command implementation
->>>>>>> f695d0e (Update README.md)
 ├── pkg/
 │   ├── config/
 │   │   └── config.go         # Configuration and environment setup
