@@ -13,12 +13,20 @@ A command-line tool for map operations powered by [Mappls](https://www.mappls.co
   - Mix and match both approaches in a single command
   - Results displayed in kilometers
 
+<<<<<<< HEAD
 ### Planned Features
 
 - **Nearby Places Finder**
   - Search for specific types of places (cafes, restaurants, parks, etc.) in a given location
   - Get top results sorted by relevance
   - Filter by radius and other criteria
+=======
+- **Nearby Places Finder** (`nearby`)
+  - Search for specific types of places (cafes, restaurants, parks, etc.) around a location
+  - Get top 5 results sorted by distance
+  - Support multiple keywords with OR and AND operators
+  - Display place information including address, phone, and email
+>>>>>>> f695d0e (Update README.md)
 
 ## Prerequisites
 
@@ -122,6 +130,76 @@ For more information:
 ./map arieldist --help
 ```
 
+<<<<<<< HEAD
+=======
+### Nearby Places Finder
+
+Search for nearby places (cafes, restaurants, hospitals, etc.) around a specific location.
+
+#### Search by Keywords
+
+```bash
+./map nearby coffee --refLocation 28.631460,77.217423
+```
+
+Output:
+```
+Found 10 places (showing top 5):
+
+1. Coffee
+   Address: Outer Circle, Connaught Place, New Delhi, Delhi, 110001
+   Distance: 82 m
+
+2. Digging Cafe
+   Address: 12 A, 1st Floor, Connaught Place, New Delhi, Delhi, 110001
+   Distance: 84 m
+
+...
+```
+
+#### Multiple Keywords with OR Operator (`;`)
+
+Provide multiple arguments separated by spaces:
+
+```bash
+./map nearby coffee tea --refLocation 28.631460,77.217423
+```
+
+Or use quoted string with semicolon:
+
+```bash
+./map nearby "coffee;tea" --refLocation 28.631460,77.217423
+```
+
+#### Multiple Keywords with AND Operator (`$`)
+
+Use a quoted string with dollar sign operator:
+
+```bash
+./map nearby "coffee $ food" --refLocation 28.631460,77.217423
+```
+
+#### Keyword Operators
+
+- **OR operator (`;`)**: Results matching either keyword
+  - Multiple arguments: `./map nearby coffee tea` → Searches for "coffee;tea"
+  - Quoted string: `./map nearby "coffee;tea"`
+
+- **AND operator (`$`)**: Results matching all keywords
+  - Must use quoted string: `./map nearby "coffee $ food"`
+
+#### Available Flags
+
+- `--refLocation` – Reference location in format `latitude,longitude` **(REQUIRED)**
+  - Example: `28.631460,77.217423`
+
+For more information:
+
+```bash
+./map nearby --help
+```
+
+>>>>>>> f695d0e (Update README.md)
 ## Project Structure
 
 ```
@@ -129,7 +207,12 @@ map-it/
 ├── main.go                    # Application entry point
 ├── cmd/
 │   ├── root.go               # Root command configuration
+<<<<<<< HEAD
 │   └── arieldist.go          # Aerial distance command implementation
+=======
+│   ├── arieldist.go          # Aerial distance command implementation
+│   └── nearby.go             # Nearby places search command implementation
+>>>>>>> f695d0e (Update README.md)
 ├── pkg/
 │   ├── config/
 │   │   └── config.go         # Configuration and environment setup
