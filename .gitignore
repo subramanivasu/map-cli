@@ -4,6 +4,7 @@ map-cli
 *.dll
 *.so
 *.dylib
+./map
 
 # Environment files
 .env

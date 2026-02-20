@@ -12,8 +12,9 @@ import (
 )
 
 const (
-	baseURL        = "https://tile.mappls.com/map/raster_tile/distanceA"
-	defaultTimeout = 10 * time.Second
+	baseURL         = "https://tile.mappls.com/map/raster_tile/distanceA"
+	nearbySearchURL = "https://search.mappls.com/search/places/nearby/json"
+	defaultTimeout  = 10 * time.Second
 )
 
 type Client struct {
@@ -25,6 +26,48 @@ type DistanceResponse struct {
 	ResponseCode int     `json:"responseCode"`
 	Distance     float64 `json:"distance"`
 	Unit         string  `json:"unit"`
+}
+
+type NearbyLocation struct {
+	Distance      int           `json:"distance"`
+	ELoc          string        `json:"eLoc"`
+	Email         string        `json:"email"`
+	Keywords      []string      `json:"keywords"`
+	LandlineNo    string        `json:"landlineNo"`
+	MobileNo      string        `json:"mobileNo"`
+	OrderIndex    int           `json:"orderIndex"`
+	PlaceAddress  string        `json:"placeAddress"`
+	PlaceName     string        `json:"placeName"`
+	Type          string        `json:"type"`
+	AddressTokens AddressTokens `json:"addressTokens"`
+}
+
+type AddressTokens struct {
+	HouseNumber    string `json:"houseNumber"`
+	HouseName      string `json:"houseName"`
+	POI            string `json:"poi"`
+	Street         string `json:"street"`
+	SubSubLocality string `json:"subSubLocality"`
+	SubLocality    string `json:"subLocality"`
+	Locality       string `json:"locality"`
+	Village        string `json:"village"`
+	SubDistrict    string `json:"subDistrict"`
+	District       string `json:"district"`
+	City           string `json:"city"`
+	State          string `json:"state"`
+	Pincode        string `json:"pincode"`
+}
+
+type PageInfo struct {
+	PageCount  int `json:"pageCount"`
+	TotalHits  int `json:"totalHits"`
+	TotalPages int `json:"totalPages"`
+	PageSize   int `json:"pageSize"`
+}
+
+type NearbySearchResponse struct {
+	SuggestedLocations []NearbyLocation `json:"suggestedLocations"`
+	PageInfo           PageInfo         `json:"pageInfo"`
 }
 
 func NewClient(accessToken string) *Client {
@@ -79,6 +122,42 @@ func (c *Client) GetDistance(fromLat, fromLon, toLat, toLon string, unit string)
 
 	distance := roundToTwoDecimals(result.Distance)
 	return distance, nil
+}
+
+func (c *Client) NearbySearch(keywords, refLocation string) ([]NearbyLocation, error) {
+	if strings.TrimSpace(keywords) == "" {
+		return nil, fmt.Errorf("keywords cannot be empty")
+	}
+
+	if strings.TrimSpace(refLocation) == "" {
+		return nil, fmt.Errorf("reference location cannot be empty")
+	}
+
+	url := fmt.Sprintf("%s?keywords=%s&refLocation=%s&access_token=%s",
+		nearbySearchURL, keywords, refLocation, c.accessToken)
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to call Mappls API: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		body, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("mappls API returned status %d: %s", resp.StatusCode, string(body))
+	}
+
+	var result NearbySearchResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("failed to parse Mappls response: %w", err)
+	}
+
+	return result.SuggestedLocations, nil
 }
 
 func validateCoordinates(lat, lon string) error {
